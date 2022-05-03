@@ -41,6 +41,7 @@ let MediaBundle = class {
       useFiducialMarker: false,
       anchorToMarker: "0",
     };
+
     this.buildGUI = function() {
       let self = this;
       this.gui = QuickSettings.create(this.index * 210, 10, `${this.name}`)
@@ -69,12 +70,48 @@ let MediaBundle = class {
         .addDropDown("edit media object", [], function(object) {
           self.showObjGUI(object.index)
         })
+        .addButton("save bundle", function() {
+          self.saveBundle(); 
+        })
       mbPanels.push(this.gui);
     };
     this.buildGUI();
   }
 
+  saveBundle() {
+    console.log('All objects are here');
+    console.log(this.objects);
+    
+    let json = {
+      'text': {},
+      'image': {},
+      'bundleParams': this.params
+    };
 
+    this.objects.forEach(o => {
+      if (o.type === 'text') {         
+        let key = 'text:' + o.index; 
+        let params = o.params; 
+        params.name = o.name; 
+        params.index = o.index; 
+        json['text'][key] = o.params; 
+      } else if (o.type === 'image') {
+        // Create image
+        let params = o.params; 
+        params.name = o.name; 
+        params.index = o.index; 
+        params.data = o.img.elt.currentSrc; // base64 data. 
+        let key = 'image:' + o.index; 
+        json['image'][key] = params; 
+      }
+    });
+
+    console.log(json);
+    json = JSON.stringify(json);
+    console.log(json);
+    dbController.saveBundle(this.name, json); 
+    // JSON bundle that goes to the DB. 
+  }
 
   showObjGUI(index) {
     for (let i = 0; i < this.objects.length; i++) {

@@ -3,17 +3,17 @@ let frWindow = [];
 let frAvg;
 let avg = (array) => array.reduce((a,b) => a + b)  / 100;
 
-
-
+// Controller to interface with the database. 
+let dbController = new DBController();
 
 function setup() {;
 
 let cnv =  createCanvas(windowWidth, windowHeight);
-imageMode(CENTER);
-cnv.drop(gotFile, playTone);
-initSound(); //turn oscillator on
-playTone(); // play a sound showing init.
-setupOsc(12000, 3334); //12000 is where I receive from MAX tuio-bridge.maxpat, 3334 is where I send back config to server
+  imageMode(CENTER);
+  cnv.drop(gotFile, playTone);
+  initSound(); //turn oscillator on
+  playTone(); // play a sound showing init.
+  setupOsc(12000, 3334); //12000 is where I receive from MAX tuio-bridge.maxpat, 3334 is where I send back config to server
 }
 
 

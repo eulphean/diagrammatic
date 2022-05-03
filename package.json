@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/garrett-laroy-johnson/diagrammatic#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "node-osc": "^6.1.14",
     "socket.io": "^4.4.1",

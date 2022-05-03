@@ -10,8 +10,6 @@ function updateIndex() {
   }
 }
 
-
-
 function logMB(inputName, log)  {
   // logs feedback to psuedoconsole
   let text;
@@ -35,10 +33,11 @@ function logMB(inputName, log)  {
 let keys = [];
 
 function keyPressed() {
-if(keys.length>=2){
-  keys.splice(0,1);
-}
-keys.push(key);
+  if(keys.length>=2){
+    keys.splice(0,1);
+  }
+  keys.push(key);
+
   // trigger name prompt for MB
   if (keys [0] == "Alt" && keys [1] == "n") {
     getPhrase(); //get name and then chain to "createMB"
@@ -47,16 +46,45 @@ keys.push(key);
     writeDiagram();
   }
 
- if (keys [0] == "Alt" && keys [1] == "h"){
-panelVis();
+  if (keys [0] == "Alt" && keys [1] == "h"){
+    panelVis();
+  }
+
+  if (keys [0] == "Alt" && keys [1] == "o"){
+    panelOrg();
+  }
+
+  if (keys [0] == "Alt" && keys [1] == "l"){
+    let dbKey = prompt("enter key", '');
+    dbController.retrieveBundle(dbKey, bundleReceived); 
+  }
 }
 
-if (keys [0] == "Alt" && keys [1] == "o"){
-panelOrg();
-}
-}
+function bundleReceived(key, bundleData) {
+  console.log(bundleData);
+  // Creates a media bundle
+  let newBundle = new MediaBundle(key, mediaBundles.length);
+  
+  // Create text objects
+  let textObjects = bundleData.text; 
+  let objects = Object.values(textObjects);
+  objects.forEach(o => {
+    let data = String(o.txt);
+    let obj = new TextObject('', o.name, data, o.index, mediaBundles.length);
+    newBundle.objects[o.index] = obj;
+  });
 
+  // Create image objects.
+  let imageObjects = bundleData.image; 
+  objects = Object.values(imageObjects);
+  objects.forEach(o => {
+    let img = createImg(o.data, "").hide();
+    let obj = new ImageObject('', o.name, img, o.index, mediaBundles.length);
+    newBundle.objects[o.index] = obj; 
+  });
 
+  mediaBundles.push(newBundle);
+}
 
 // //trigger drag for given bundle
 function mousePressed() {
@@ -64,6 +92,7 @@ function mousePressed() {
     mediaBundles[i].pressed();
     }
 }
+
 //
 function doubleClicked() {
   for (i = 0; i < mediaBundles.length; i++) {
